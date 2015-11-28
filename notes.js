@@ -3,6 +3,7 @@
   var author = 'Arjo';
 
   getNotesList();
+  changeAuthorHandler();
 
   $('.container').click(clickHandler);
   $('#author').click(function() {
@@ -60,6 +61,12 @@
   function saveNoteFail(error)
   {
     alert(error.status + ': ' + error.message);
+  }
+
+  function changeAuthorHandler()
+  {
+    var name = prompt('New author\'s name');
+    changeAuthor(name);
   }
 
   function changeAuthor(name)
