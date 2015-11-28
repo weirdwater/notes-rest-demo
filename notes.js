@@ -12,10 +12,12 @@
 
   function clickHandler(e)
   {
-    e.preventDefault();
     var target = $(e.target);
     // action link > li > ul > article
     var noteElement = target.parent().parent().parent();
+
+    if (target.data('action'))
+      e.preventDefault();
 
     switch (target.data('action')) {
       case 'delete':
@@ -27,7 +29,37 @@
       case 'back':
         getNotesList();
         break;
+      case 'new':
+        $('.container')
+          .empty()
+          .append(createForm());
+        break;
+      case 'save':
+        saveNote();
+        break;
     }
+  }
+
+  function saveNote()
+  {
+    var newNote = {
+      author: author,
+      title:  $('#inp-title').val(),
+      body:   $('#inp-body').val()
+    };
+
+    $.ajax({
+      url: url,
+      type: 'POST',
+      data: newNote
+    })
+    .done(getNoteSuccess)
+    .fail(saveNoteFail);
+  }
+
+  function saveNoteFail(error)
+  {
+    alert(error.status + ': ' + error.message);
   }
 
   function changeAuthor(name)
@@ -38,7 +70,6 @@
 
   function getNote(id)
   {
-    console.log(url + '?id=' + id);
     $.getJSON(url + '?id=' + id)
       .done(getNoteSuccess)
       .fail(getNoteFail);
@@ -59,7 +90,15 @@
   function getNotesList()
   {
     $('.container').empty()
-      .append($('<h1>', { id: 'page-title', text: 'Notes' }));
+      .append($('<h1>', {
+        id: 'page-title',
+        text: 'Notes'
+      }))
+      .append($('<button>', {
+        class: 'button-main',
+        'data-action': 'new',
+        text: 'New Note'
+    }));
     $.getJSON(url)
       .done(generateNotes)
       .fail(noteListFail);
@@ -79,7 +118,7 @@
   {
     if (data.length) {
       var domFragment = $(document.createDocumentFragment());
-      $.each(data, function(index, note) {
+      $.each($(data).get().reverse(), function(index, note) {
         createNoteElement(note)
           .appendTo(domFragment);
       });
@@ -126,6 +165,42 @@
     console.log('Error, couldn\'t delete the note: '+ title);
   }
 
+  function createForm()
+  {
+    var domFragment = document.createDocumentFragment();
+    $(domFragment)
+      .append($('<h1>', {
+        id: 'page-title',
+        text: 'New Note'
+      }))
+      .append($('<label>', {
+        for: 'inp-title',
+        text: 'Title'
+      }))
+      .append($('<input>', {
+        type: 'text',
+        id: 'inp-title'
+      }))
+      .append($('<label>', {
+        for: 'inp-body',
+        text: 'Body'
+      }))
+      .append($('<textarea>', {
+        id: 'inp-body',
+        rows: 5
+      }))
+      .append($('<button>', {
+        'data-action': 'back',
+        text: 'Cancel'
+      }))
+      .append($('<button>', {
+        class: 'button-main',
+        'data-action': 'save',
+        text: 'Save'
+      }));
+    return domFragment;
+  }
+
   function createDetailNoteElement(note)
   {
     var back = $('<li>').append($('<a>', {
@@ -162,7 +237,7 @@
       }))
       .append($('<h3>', {
         class: 'author',
-        text: note.author
+        text: 'Author: ' + note.author
       }))
       .append(options);
   }

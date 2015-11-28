@@ -21,6 +21,7 @@ h1 {
   padding: .1em 1em;
   margin-bottom: 1em;
   transition: 1s;
+  border-radius: 2px;
 }
 
 .action-links {
@@ -51,4 +52,44 @@ h1 {
 
 .error-message {
   color: #b88;
+}
+
+label {
+  font-size: 1.2em;
+}
+
+input,
+textarea {
+  display: block;
+  width: 98%;
+  border: 1px solid #ababab;
+  font-size: 1.2em;
+  padding: .3em;
+  margin: 1em 0;
+  border-radius: 2px;
+}
+
+button {
+  font-size: 1.1em;
+  background-color: #fff;
+  border: none;
+  padding: .5em;
+  transition: .3s;
+  border-radius: 2px;
+  min-width: 5em;
+  margin-right: .5em;
+  margin-bottom: 1em;
+}
+
+button:hover {
+  background-color: #f3f3f3;
+}
+
+button.button-main {
+  background-color: #0a85de;
+  color: #fff;
+}
+
+button.button-main:hover {
+  background-color: #0099ff;
 }
