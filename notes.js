@@ -6,24 +6,57 @@
 
   $('.container').click(clickHandler);
 
-  function clickHandler(e) {
+  function clickHandler(e)
+  {
     e.preventDefault();
     var target = $(e.target);
-    if (target.data('action') == 'delete') {
-      // Delete link > li > ul > article
-      var noteElement = target.parent().parent().parent();
-      deleteNote(noteElement);
+    // action link > li > ul > article
+    var noteElement = target.parent().parent().parent();
+
+    switch (target.data('action')) {
+      case 'delete':
+        deleteNote(noteElement);
+        break;
+      case 'more':
+        getNote(noteElement.attr('id'));
+        break;
+      case 'back':
+        getNotesList();
+        break;
     }
+  }
+
+  function getNote(id)
+  {
+    console.log(url + '?id=' + id);
+    $.getJSON(url + '?id=' + id)
+      .done(getNoteSuccess)
+      .fail(getNoteFail);
+  }
+
+  function getNoteSuccess(data)
+  {
+    $('.container').empty()
+      .append($('<h1>', { id: 'page-title', text: 'Notes' }))
+      .append(createDetailNoteElement(data));
+  }
+
+  function getNoteFail(error)
+  {
+    alert('oops! Something went wrong');
   }
 
   function getNotesList()
   {
+    $('.container').empty()
+      .append($('<h1>', { id: 'page-title', text: 'Notes' }));
     $.getJSON(url)
       .done(generateNotes)
       .fail(noteListFail);
   }
 
-  function noteListFail(error) {
+  function noteListFail(error)
+  {
     $('<h2>', {
       class: 'error-message',
       text: 'Something went wrong...'
@@ -70,6 +103,10 @@
   function deleteNoteSuccess(data, noteElement)
   {
     noteElement.remove();
+
+    if (noteElement.attr('class') == 'detail-note') {
+      getNotesList();
+    }
   }
 
   function deleteNoteFail(error, noteElement)
@@ -77,6 +114,47 @@
     console.log(noteElement);
     var title = $('#' + noteElement.attr('id') +' .title').text();
     console.log('Error, couldn\'t delete the note: '+ title);
+  }
+
+  function createDetailNoteElement(note)
+  {
+    var back = $('<li>').append($('<a>', {
+      href: '#',
+      'data-action': 'back',
+      text: '[back]'
+    }));
+    var edit = $('<li>').append($('<a>', {
+      href: '#',
+      'data-action': 'edit',
+      text: '[edit]'
+    }));
+    var deleteOpt = $('<li>').append($('<a>', {
+      href: '#',
+      'data-action': 'delete',
+      text: '[delete]'
+    }));
+    var options = $('<ul>', {class: 'action-links'})
+      .append(back)
+      .append(edit)
+      .append(deleteOpt);
+
+    return $('<article>', {
+      class: 'detail-note',
+      id: note.id
+    })
+      .append($('<h2>',{
+        class: "title",
+        text: note.title
+      }))
+      .append($('<p>', {
+        class: 'body',
+        text: note.body
+      }))
+      .append($('<h3>', {
+        class: 'author',
+        text: note.author
+      }))
+      .append(options);
   }
 
   function createNoteElement(note)
