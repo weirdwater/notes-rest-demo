@@ -1,0 +1,54 @@
+body {
+  box-sizing: border-box;
+  font-family: sans-serif;
+  background-color: rgb(231, 231, 231);
+
+}
+
+h1 {
+  font-size: 2em;
+}
+
+.container {
+  max-width: 900px;
+  margin: 3em auto 0;
+  background-color: #fff;
+  padding: 1em;
+}
+
+.note {
+  background-color: #f3f3f3;
+  padding: .1em 1em;
+  margin-bottom: 1em;
+  transition: 1s;
+}
+
+.action-links {
+  list-style: none;
+  padding: 0;
+}
+
+.action-links li {
+  display: inline;
+  margin-right: .3em;
+}
+
+.action-links a {
+  color: #6f6f6f;
+}
+
+.action-links a:hover {
+  color: #000;
+}
+
+.action-links a[data-action="delete"]:hover {
+  color: #e00;
+}
+
+.empty-message {
+  color: #888;
+}
+
+.error-message {
+  color: #b88;
+}
