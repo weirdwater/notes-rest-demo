@@ -5,6 +5,10 @@
   getNotesList();
 
   $('.container').click(clickHandler);
+  $('#author').click(function() {
+    var name = prompt('New author\'s name');
+    changeAuthor(name);
+  });
 
   function clickHandler(e)
   {
@@ -24,6 +28,12 @@
         getNotesList();
         break;
     }
+  }
+
+  function changeAuthor(name)
+  {
+    author = name;
+    $('#author').text(name);
   }
 
   function getNote(id)
